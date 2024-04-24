@@ -53,7 +53,7 @@ func (h *Handler) createOrder(products []entity.Product, cartItems []entity.Cart
 	// create a map of products for easier access
 	productsMap := make(map[int]entity.Product)
 	for _, product := range products {
-		productsMap[product.ID] = product
+		productsMap[product.ProductID] = product
 	}
 
 	// check if all products are available

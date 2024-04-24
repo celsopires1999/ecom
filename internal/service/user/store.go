@@ -16,7 +16,7 @@ func NewStore(db *sql.DB) *Store {
 }
 
 func (s *Store) CreateUser(user entity.User) error {
-	_, err := s.db.Exec("INSERT INTO users (firstName, lastName, email, password) VALUES ($1, $2, $3, $4)", user.FirstName, user.LastName, user.Email, user.Password)
+	_, err := s.db.Exec("INSERT INTO users (first_name, last_name, email, password) VALUES ($1, $2, $3, $4)", user.FirstName, user.LastName, user.Email, user.Password)
 	if err != nil {
 		return err
 	}
@@ -38,7 +38,7 @@ func (s *Store) GetUserByEmail(email string) (*entity.User, error) {
 		}
 	}
 
-	if u.ID == 0 {
+	if u.UserID == 0 {
 		return nil, fmt.Errorf("user not found")
 	}
 
@@ -46,7 +46,7 @@ func (s *Store) GetUserByEmail(email string) (*entity.User, error) {
 }
 
 func (s *Store) GetUserByID(id int) (*entity.User, error) {
-	rows, err := s.db.Query("SELECT * FROM users WHERE id = $1", id)
+	rows, err := s.db.Query("SELECT * FROM users WHERE user_id = $1", id)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +59,7 @@ func (s *Store) GetUserByID(id int) (*entity.User, error) {
 		}
 	}
 
-	if u.ID == 0 {
+	if u.UserID == 0 {
 		return nil, fmt.Errorf("user not found")
 	}
 
@@ -70,7 +70,7 @@ func scanRowsIntoUser(rows *sql.Rows) (*entity.User, error) {
 	user := new(entity.User)
 
 	err := rows.Scan(
-		&user.ID,
+		&user.UserID,
 		&user.FirstName,
 		&user.LastName,
 		&user.Email,

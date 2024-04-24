@@ -5,16 +5,16 @@ import (
 )
 
 type User struct {
-	ID        int       `json:"id"`
-	FirstName string    `json:"firstName"`
-	LastName  string    `json:"lastName"`
+	UserID    int       `json:"user_id" db:"user_id"`
+	FirstName string    `json:"firstName" db:"first_name"`
+	LastName  string    `json:"lastName" db:"last_name"`
 	Email     string    `json:"email"`
 	Password  string    `json:"-"`
-	CreatedAt time.Time `json:"createdAt"`
+	CreatedAt time.Time `json:"created_at" db:"created_at"`
 }
 
 type Product struct {
-	ID          int     `json:"id"`
+	ProductID   int     `json:"product_id" db:"product_id"`
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
 	Image       string  `json:"image"`
@@ -22,30 +22,30 @@ type Product struct {
 	// note that this isn't the best way to handle quantity
 	// because it's not atomic (in ACID), but it's good enough for this example
 	Quantity  int       `json:"quantity"`
-	CreatedAt time.Time `json:"createdAt"`
+	CreatedAt time.Time `json:"created_at" db:"created_at"`
 }
 
 type CartCheckoutItem struct {
-	ProductID int `json:"productID"`
+	ProductID int `json:"product_id" db:"product_id"`
 	Quantity  int `json:"quantity"`
 }
 
 type Order struct {
-	ID        int       `json:"id"`
-	UserID    int       `json:"userID"`
+	OrderID   int       `json:"order_id" db:"order_id"`
+	UserID    int       `json:"user_id" db:"user_id"`
 	Total     float64   `json:"total"`
 	Status    string    `json:"status"`
 	Address   string    `json:"address"`
-	CreatedAt time.Time `json:"createdAt"`
+	CreatedAt time.Time `json:"created_at" db:"created_at"`
 }
 
 type OrderItem struct {
-	ID        int       `json:"id"`
-	OrderID   int       `json:"orderID"`
-	ProductID int       `json:"productID"`
-	Quantity  int       `json:"quantity"`
-	Price     float64   `json:"price"`
-	CreatedAt time.Time `json:"createdAt"`
+	OrderItemID int       `json:"order_item_id" db:"order_item_id"`
+	OrderID     int       `json:"order_id" db:"order_id"`
+	ProductID   int       `json:"product_id" db:"product_id"`
+	Quantity    int       `json:"quantity"`
+	Price       float64   `json:"price"`
+	CreatedAt   time.Time `json:"created_at" db:"created_at"`
 }
 
 type UserStore interface {
@@ -75,8 +75,8 @@ type CreateProductPayload struct {
 }
 
 type RegisterUserPayload struct {
-	FirstName string `json:"firstName" validate:"required"`
-	LastName  string `json:"lastName" validate:"required"`
+	FirstName string `json:"first_name" validate:"required"`
+	LastName  string `json:"last_Name" validate:"required"`
 	Email     string `json:"email" validate:"required,email"`
 	Password  string `json:"password" validate:"required,min=3,max=130"`
 }

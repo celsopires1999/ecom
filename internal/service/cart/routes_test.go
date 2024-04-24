@@ -12,11 +12,11 @@ import (
 )
 
 var mockProducts = []entity.Product{
-	{ID: 1, Name: "product 1", Price: 10, Quantity: 100},
-	{ID: 2, Name: "product 2", Price: 20, Quantity: 200},
-	{ID: 3, Name: "product 3", Price: 30, Quantity: 300},
-	{ID: 4, Name: "empty stock", Price: 30, Quantity: 0},
-	{ID: 5, Name: "almost stock", Price: 30, Quantity: 1},
+	{ProductID: 1, Name: "product 1", Price: 10, Quantity: 100},
+	{ProductID: 2, Name: "product 2", Price: 20, Quantity: 200},
+	{ProductID: 3, Name: "product 3", Price: 30, Quantity: 300},
+	{ProductID: 4, Name: "empty stock", Price: 30, Quantity: 0},
+	{ProductID: 5, Name: "almost stock", Price: 30, Quantity: 1},
 }
 
 func TestCartServiceHandler(t *testing.T) {

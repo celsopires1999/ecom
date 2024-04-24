@@ -1,12 +1,12 @@
-@jwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzQXQiOjE3MTQ1MjM2MTAsInVzZXJJRCI6IjEifQ.373K-KRx6pLKcXz-S2E4Th23q_hoxvPVITKbKjFCp4A
+@jwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzQXQiOjE3MTQ2MDc3MjYsInVzZXJJRCI6IjEifQ.DiXry2ArFRQNGDuXHCT3KnMlu22SzFvrHmZjhG3ZXfw
 
 ###
 POST http://localhost:8000/api/v1/register
 Content-Type: application/json
 
 {
-    "firstName": "John",
-    "lastName": "Doe",
+    "first_name": "John",
+    "last_name": "Doe",
     "email": "john.doe@userland.com",
     "password": "12345678"
 }
@@ -21,6 +21,11 @@ Content-Type: application/json
 }
 
 ###
+GET http://localhost:8000/api/v1/users/1
+Content-Type: application/json
+Authorization: {{jwtToken}}
+
+###
 POST http://localhost:8000/api/v1/products
 Content-Type: application/json
 Authorization: {{jwtToken}}
@@ -29,12 +34,16 @@ Authorization: {{jwtToken}}
     "name": "Radio",
     "description": "Radio Extra Large",
     "image": "https://via.placeholder.com/150",
-    "price": 220.00,
-    "quantity": 20
+    "price": 110.00,
+    "quantity": 60
 }
 
 ###
 GET http://localhost:8000/api/v1/products
+Content-Type: application/json
+
+###
+GET http://localhost:8000/api/v1/products/2
 Content-Type: application/json
 
 ###
@@ -45,11 +54,11 @@ Authorization: {{jwtToken}}
 {
     "items": [
         {
-            "productID": 1,
+            "product_id": 1,
             "quantity": 2
         },
         {
-            "productID": 2,
+            "product_id": 2,
             "quantity": 3
         }
     ]

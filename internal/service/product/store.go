@@ -16,7 +16,7 @@ func NewStore(db *sql.DB) *Store {
 }
 
 func (s *Store) GetProductByID(productID int) (*entity.Product, error) {
-	rows, err := s.db.Query("SELECT * FROM products WHERE id = ?", productID)
+	rows, err := s.db.Query("SELECT * FROM products WHERE product_id = $1", productID)
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +33,6 @@ func (s *Store) GetProductByID(productID int) (*entity.Product, error) {
 }
 
 func (s *Store) GetProductsByID(productIDs []int) ([]entity.Product, error) {
-	// placeholders := strings.Repeat(",?", len(productIDs)-1)
 	var placeholders string
 	for i := 1; i <= len(productIDs); i++ {
 		if i > 1 {
@@ -41,7 +40,7 @@ func (s *Store) GetProductsByID(productIDs []int) ([]entity.Product, error) {
 		}
 		placeholders += fmt.Sprintf("$%d", i)
 	}
-	query := fmt.Sprintf("SELECT * FROM products WHERE id IN (%s)", placeholders)
+	query := fmt.Sprintf("SELECT * FROM products WHERE product_id IN (%s)", placeholders)
 
 	// Convert productIDs to []interface{}
 	args := make([]interface{}, len(productIDs))
@@ -97,7 +96,7 @@ func (s *Store) CreateProduct(product entity.CreateProductPayload) error {
 }
 
 func (s *Store) UpdateProduct(product entity.Product) error {
-	_, err := s.db.Exec("UPDATE products SET name = $1, price = $2, image = $3, description = $4, quantity = $5 WHERE id = $6", product.Name, product.Price, product.Image, product.Description, product.Quantity, product.ID)
+	_, err := s.db.Exec("UPDATE products SET name = $1, price = $2, image = $3, description = $4, quantity = $5 WHERE product_id = $6", product.Name, product.Price, product.Image, product.Description, product.Quantity, product.ProductID)
 	if err != nil {
 		return err
 	}
@@ -109,7 +108,7 @@ func scanRowsIntoProduct(rows *sql.Rows) (*entity.Product, error) {
 	product := new(entity.Product)
 
 	err := rows.Scan(
-		&product.ID,
+		&product.ProductID,
 		&product.Name,
 		&product.Description,
 		&product.Image,
