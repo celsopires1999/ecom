@@ -5,6 +5,9 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/celsopires1999/ecom/internal/service/cart"
+	"github.com/celsopires1999/ecom/internal/service/order"
+	"github.com/celsopires1999/ecom/internal/service/product"
 	"github.com/celsopires1999/ecom/internal/service/user"
 	"github.com/gorilla/mux"
 )
@@ -29,20 +32,19 @@ func (s *APIServer) Run() error {
 	userHandler := user.NewHandler(userStore)
 	userHandler.RegisterRoutes(subrouter)
 
-	// productStore := product.NewStore(s.db)
-	// productHandler := product.NewHandler(productStore, userStore)
-	// productHandler.RegisterRoutes(subrouter)
+	productStore := product.NewStore(s.db)
+	productHandler := product.NewHandler(productStore, userStore)
+	productHandler.RegisterRoutes(subrouter)
 
-	// orderStore := order.NewStore(s.db)
+	orderStore := order.NewStore(s.db)
 
-	// cartHandler := cart.NewHandler(productStore, orderStore, userStore)
-	// cartHandler.RegisterRoutes(subrouter)
+	cartHandler := cart.NewHandler(productStore, orderStore, userStore)
+	cartHandler.RegisterRoutes(subrouter)
 
-	// // Serve static files
-	// router.PathPrefix("/").Handler(http.FileServer(http.Dir("static")))
+	// Serve static files
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir("static")))
 
 	log.Println("Listening on", s.addr)
 
 	return http.ListenAndServe(s.addr, router)
-
 }

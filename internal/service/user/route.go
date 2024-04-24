@@ -5,9 +5,11 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/celsopires1999/ecom/configs"
 	"github.com/celsopires1999/ecom/internal/entity"
 	"github.com/celsopires1999/ecom/internal/service/auth"
 	"github.com/celsopires1999/ecom/utils"
+	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 )
 
@@ -24,7 +26,7 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/register", h.handleRegister).Methods("POST")
 
 	// admin routes
-	// router.HandleFunc("/users/{userID}", auth.WithJWTAuth(h.handleGetUser, h.store)).Methods(http.MethodGet)
+	router.HandleFunc("/users/{userID}", auth.WithJWTAuth(h.handleGetUser, h.store)).Methods(http.MethodGet)
 }
 
 func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
@@ -34,34 +36,33 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// if err := utils.Validate.Struct(user); err != nil {
-	// 	errors := err.(validator.ValidationErrors)
-	// 	utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid payload: %v", errors))
-	// 	return
-	// }
+	if err := utils.Validate.Struct(user); err != nil {
+		errors := err.(validator.ValidationErrors)
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid payload: %v", errors))
+		return
+	}
 
-	// u, err := h.store.GetUserByEmail(user.Email)
-	_, err := h.store.GetUserByEmail(user.Email)
+	u, err := h.store.GetUserByEmail(user.Email)
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("not found, invalid email or password"))
 		return
 	}
 
-	// if !auth.ComparePasswords(u.Password, []byte(user.Password)) {
-	// 	utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid email or password"))
-	// 	return
-	// }
+	if !auth.ComparePasswords(u.Password, []byte(user.Password)) {
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid email or password"))
+		return
+	}
 
-	// secret := []byte(configs.Envs.JWTSecret)
-	// token, err := auth.CreateJWT(secret, u.ID)
-	// if err != nil {
-	// 	utils.WriteError(w, http.StatusInternalServerError, err)
-	// 	return
-	// }
+	secret := []byte(configs.Envs.JWTSecret)
+	token, err := auth.CreateJWT(secret, u.ID)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
 
-	utils.WriteJSON(w, http.StatusOK, "success")
-	// utils.WriteJSON(w, http.StatusOK, map[string]string{"token": token})
+	utils.WriteJSON(w, http.StatusOK, map[string]string{"token": token})
 }
+
 func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 	var user entity.RegisterUserPayload
 	if err := utils.ParseJSON(r, &user); err != nil {
@@ -69,11 +70,11 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// if err := utils.Validate.Struct(user); err != nil {
-	// 	errors := err.(validator.ValidationErrors)
-	// 	utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid payload: %v", errors))
-	// 	return
-	// }
+	if err := utils.Validate.Struct(user); err != nil {
+		errors := err.(validator.ValidationErrors)
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid payload: %v", errors))
+		return
+	}
 
 	// check if user exists
 	_, err := h.store.GetUserByEmail(user.Email)

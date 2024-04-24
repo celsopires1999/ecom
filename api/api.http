@@ -1,6 +1,62 @@
+@jwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzQXQiOjE3MTQ1MjM2MTAsInVzZXJJRCI6IjEifQ.373K-KRx6pLKcXz-S2E4Th23q_hoxvPVITKbKjFCp4A
+
+###
+POST http://localhost:8000/api/v1/register
+Content-Type: application/json
+
+{
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "john.doe@userland.com",
+    "password": "12345678"
+}
+
+###
+POST http://localhost:8000/api/v1/login
+Content-Type: application/json
+
+{
+    "email": "john.doe@userland.com",
+    "password": "12345678"
+}
+
+###
+POST http://localhost:8000/api/v1/products
+Content-Type: application/json
+Authorization: {{jwtToken}}
+
+{
+    "name": "Radio",
+    "description": "Radio Extra Large",
+    "image": "https://via.placeholder.com/150",
+    "price": 220.00,
+    "quantity": 20
+}
+
+###
+GET http://localhost:8000/api/v1/products
+Content-Type: application/json
+
+###
+POST http://localhost:8000/api/v1/cart/checkout
+Content-Type: application/json
+Authorization: {{jwtToken}}
+
+{
+    "items": [
+        {
+            "productID": 1,
+            "quantity": 2
+        },
+        {
+            "productID": 2,
+            "quantity": 3
+        }
+    ]
+}
 
 
-
+### 
 
 ## valid uuid = b8ee6449-b662-4245-9f12-430dfb74df6c
 
@@ -214,4 +270,3 @@ Authorization: Bearer {{jwtToken}}
 
 ###
 
-@jwtToken = xxx
